@@ -33,16 +33,16 @@ if (password_verify($contrasena2, $contrasena)) {
 		$sql_agregar = "INSERT INTO jugadors (nick, contrasenya) VALUES ('$usuario_nuevo', '$contrasena2')";
 		$resultado = mysqli_query($con, $sql_agregar);
 
-		$consultaCodi = "SELECT codi FROM jugadors WHERE nick = '$usuario_nuevo'";
-		echo $consultaCodi;
-		$resultado2 = mysqli_query($con, $consultaCodi);
-		$variable = mysqli_fetch_object($resultado2, $con);
+		//$consultaCodi = "SELECT codi FROM jugadors WHERE nick = '$usuario_nuevo'";
+		//echo $consultaCodi;
+		//$resultado2 = mysqli_query($con, $consultaCodi);
+		//$variable = mysqli_fetch_object($resultado2, $con);
 		//echo $variable;
 		//$InsertId = "INSERT INTO partida (id_jugador) VALUES $codigo";
 		//$resultado3 = mysqli_query($con, $InsertId); // valor del select del codigo
 
 		echo "La contraseña es valida";
-		header("location:web/index.html");
+		header("location:./index.html");
 	}
 
 	//$consulta="SELECT * FROM jugadors where nick='$usuario' AND contrasenya='$contrasena'";
