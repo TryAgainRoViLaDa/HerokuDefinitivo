@@ -12,11 +12,12 @@ var KeyB;
 var texto;
 var KeyQ;
 var KeyC;
+var KeyP;
 var player;
 var velocidd;
 var enemigo;
 var direccion2;
-var NPC;
+var npc;
 var interaccion;
 var hablar;
 var pasar;
@@ -30,6 +31,7 @@ var cerd;
 var createEnemy;
 var enemigos;
 var mascota;
+var npc;
 var seguir;
 var cambio;
 var scoreText;
@@ -54,14 +56,15 @@ var disparostList;
 var contadorCorazones = 0;
 var serpiente;
 var furro;
-
+var temporizador = 0;
+var temporizadorenemigo = 0;
 var vidas;
 var marcavidas;
-
+var klk;
 var CoolDownHeal = 0;
 var corazones;
 var contadorCorazones;
-
+var perseguir;
 var KeyV;
 
 
@@ -92,15 +95,15 @@ class laia3 extends Phaser.Scene
 
 	preload() {
 
-	    this.load.image('gameTiles2', 'tileset/NatureTileset.png');
+	    this.load.image('gameTiles3', 'tileset/NatureTileset.png');
 
-	    this.load.tilemapTiledJSON('tilemap2', 'maps/nive.json');
+	    this.load.tilemapTiledJSON('tilemap3', 'maps/nivel3.json');
 
 	    this.load.atlas('attack','assets/attack.png', 'assets/attack_atlas.json');
 
 	    this.load.image('moneda', 'assets/monedas.png');
 
-	    this.load.image('cerdo', 'assets/cerdo.png');
+	    this.load.image('cerdo', 'assets/tenor.png');
 
 	    this.load.image('heart', 'assets/heart.png');
 
@@ -114,13 +117,13 @@ class laia3 extends Phaser.Scene
 
 	    this.load.image('m', 'assets/m.png');
 
-	    this.load.image('NPC', 'assets/NPC.png');
+	    this.load.image('npc', 'assets/npc.png');
 
 	    this.load.image('texto', 'assets/bafarada1.png');
 
 	    this.load.image('texto2', 'assets/bafarada2.png');
 
-	    this.load.image('cerd', 'assets/cerdo.png');
+	    this.load.image('cerd', 'assets/tenor.png');
 
 	    this.load.image('cambio', 'assets/enemy.png');
 
@@ -133,9 +136,9 @@ class laia3 extends Phaser.Scene
 	   
 	create() {
 
-	    map = this.make.tilemap({key:'tilemap2'});
+	    map = this.make.tilemap({key:'tilemap3'});
 
-	    tileset = map.addTilesetImage('nature','gameTiles2');
+	    tileset = map.addTilesetImage('nature','gameTiles3');
 
 	    capa = map.createLayer(0, tileset);
 
@@ -156,7 +159,7 @@ class laia3 extends Phaser.Scene
 	    obstaculos.setCollisionByProperty({colisiones: true});
 	    obstaculos.setCollisionByProperty({collides: true});
 
-	    const tileSpawner = map.createFromObjects('objetos');
+	    tileSpawner = map.createFromObjects('enemigos');
 	    tileSpawner.forEach(obj => 
 	    {
         	//this.physics.world.enable(obj);
@@ -166,6 +169,8 @@ class laia3 extends Phaser.Scene
             		this.enemigos(obj);
         		}
    		})
+
+   		
 
 
 	    KeyV=this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.V);
@@ -180,7 +185,16 @@ class laia3 extends Phaser.Scene
 	    KeyB=this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.B);
 
 	    player = this.physics.add.sprite(20,2450, 'attack').setScale(0.07);
-
+	    fetch("http:/ProyectoActual/recuperarDatos2.php").then(response=>{
+                    if (response.ok) {
+                        return response;
+                    }
+                }).then(async respuesta=>{
+                    var texto = await respuesta.text();
+                    var posiciones = texto.split(" - ");
+                    player.x = posiciones[0] * 1;
+                    player.y = posiciones[1] * 1;
+                });
 	    player.setBounce(0.2);
 	    player.setCollideWorldBounds(true);
 
@@ -223,10 +237,10 @@ class laia3 extends Phaser.Scene
 	    cambio.body.setSize(100, 300, 50, 25);
 	    cambio.setImmovable(true);
 
-	    serpiente = this.physics.add.sprite(200,2200, 'serpiente').setScale(0.1);
+	    /*serpiente = this.physics.add.sprite(200,2200, 'serpiente').setScale(0.1);
 	    serpiente.setCollideWorldBounds(true);
 	    serpiente.body.setSize(100, 300, 50, 25);
-	    serpiente.setImmovable(true);
+	    serpiente.setImmovable(true);*/
 	    //chuleta = this.add.sprite(595,40, 'chuleta').setScale(0.3);
 	    //scoreText1 = this.add.text(605, 45,+ chuleta, { fontSize: '20px', fill: 'white' });
 
@@ -234,9 +248,8 @@ class laia3 extends Phaser.Scene
 	    //this.physics.add.collider(player, capa);
 	    //this.physics.add.collider(player, cambio);
 
-	    //Sprites del NPC
-	    NPC = this.physics.add.sprite(1800,1800, 'NPC');
-	    NPC.setScale(0.2);
+	    //Sprites del npc
+	    
 
 	    //Colision con el final de la pantalla
 	    player.setBounce(0.2);
@@ -244,9 +257,10 @@ class laia3 extends Phaser.Scene
 	    player.body.setSize(100, 300, 50, 25);
 
 		//Interacciones
-	    this.physics.add.overlap(player, NPC, this.interaccion, null, this);
-	    this.physics.add.overlap(player, NPC, this.hablar, null, this);
-	    this.physics.add.overlap(player, NPC, this.pasar, null, this);
+	    this.physics.add.overlap(player, npc, this.interaccion, null, this);
+	    this.physics.add.overlap(player, npc, this.hablar, null, this);
+	    this.physics.add.overlap(player, npc, this.pasar, null, this);
+
 	    this.physics.add.overlap(player, enemigosList, function(player, cerd){cerd.seguir = true; console.log(cerd)}, null, this);
 	   // this.physics.add.overlap(player, cerd, this.movimientoenemigo, null, this);
 	    this.physics.add.overlap(player, cambio, this.hola, null, this);
@@ -257,6 +271,7 @@ class laia3 extends Phaser.Scene
 	    this.physics.add.overlap(player, disparostList, this.destruirplayer, null, this);
 	    this.physics.add.overlap(player, heartList, this.VidaI, null, this);
         this.physics.add.overlap(player, heartList, this.consumir, null, this);
+
 	   // console.log(cambio)
 
 	   	inventario = this.physics.add.sprite(750,90, 'inventario');
@@ -265,16 +280,23 @@ class laia3 extends Phaser.Scene
 		inventario.huecos =new Array;
 	    //this.physics.add.overlap(player, cambio, null, this);
 
+
+		npc = this.physics.add.sprite(120,130, 'npc');
+	    npc.setScale(0.2);
+		npc.body.setSize(100, 300, 50, 25);
+		npc.seguir = false;
+		this.movimientonpc();
+
 	    
 
-	    this.physics.add.overlap(player,enemigo, this.perseguir, null, this);
+	    this.physics.add.overlap(player,enemigo,perseguir, null, this);
 
 	    direccion2 =new Phaser.Math.Vector2(1, 0);
 	    direccion2.normalize();
 
 	    this.mascotas();
 
-	    marcavidas = this.add.text(0, 0, 'Vidas = 5', { fontSize: '20px', fill: 'black' }).setScrollFactor(0);
+	    marcavidas = this.add.text(0, 0, 'Vidas = 7' , { fontSize: '20px', fill: 'black' }).setScrollFactor(0);
 	    
 	    //.call(this);
 	    /*chuleta1 = this.add.sprite(1730,1050, 'chuleta').setScale(0.3);
@@ -285,11 +307,26 @@ class laia3 extends Phaser.Scene
 	   /* */
 		this.physics.add.collider(enemigosList, obstaculos);
 		this.physics.add.collider(heartList, obstaculos);
+		this.physics.add.collider(mascotaList, obstaculos);
 	    
 	}
 
 	update()
 	{
+		if (temporizador > 0) 
+		{
+			temporizador--;
+		}
+
+		Phaser.Actions.Call(disparostList.getChildren(), function(a) {
+			if (a.temporizadorenemigo <= 0) 
+			{
+				a.destroy();
+				a.temporizadorenemigo = 1;
+			}
+			a.temporizadorenemigo--;
+		})
+
 	   if(cd>0)
 	    {
 	        cd=cd-1;
@@ -357,13 +394,12 @@ class laia3 extends Phaser.Scene
 	    }
 
 
-	    if (KeyQ.isDown)
+	    if (KeyQ.isDown && temporizador == 0)
 	    {
 	    	this.basico();
+	    	temporizador = 400;
 	    	//ataque2.call(this); 
 	    }
-
-	    
 
 	    if (SPACE.isDown && finalconversacion==false)
 	    {
@@ -384,18 +420,44 @@ class laia3 extends Phaser.Scene
 	   //this.hola();
 	   	this.hablar();
 		this.pasar();
+		this.updateDatos();
 		this.interaccion();
 		this.consumir();
 		this.movimientoenemigo();
-		
-		this.atacar();
+		this.movimientonpc();
+		this.updateboom();
 	    
 	}
+
+
+
+	updateboom()
+	{
+		Phaser.Actions.Call(mascotaList.getChildren(), function(b){
+			if (b.body.velocity.x == 0 && b.body.velocity.y == 0) 
+			{
+				b.destroy();
+			}
+		})
+	}
+
 	crearpowerup()
 	{
 		heart = heartList.create(enemigo.x, enemigo.y, 'heart');
     	heart.setScale(0.1,0.1);
 	}
+
+	movimientonpc()
+	{
+		if (npc.seguir == true) 
+            {
+            	npc.direccion = new Phaser.Math.Vector2(player.x-npc.x,player.y-npc.y); 
+                npc.setVelocityX(velocidad * npc.direccion.x/2);
+                npc.setVelocityY(velocidad * npc.direccion.y/2);
+            }
+	}
+	
+
 	movimientoenemigo()
 	{
 		//console.log('hola');
@@ -407,21 +469,21 @@ class laia3 extends Phaser.Scene
             	enemigos.direccion = new Phaser.Math.Vector2(player.x-enemigos.x,player.y-enemigos.y); 
                 enemigos.setVelocityX(velocidad * enemigos.direccion.x/2);
                 enemigos.setVelocityY(velocidad * enemigos.direccion.y/2);
-               /*for(i = 0; i < enemigosList.getChildren().length; i++)
+               for(i = 0; i < enemigosList.getChildren().length; i++)
         		{
             		var enemicdis = disparostList.create(enemigos.x, enemigos.y, 'm');
             		enemicdis.setScale(0.3,0.3);
             		enemicdis.angle = 360/8 * i;
 					enemicdis.direccio =new Phaser.Math.Vector2(Math.cos(enemicdis.angle * Math.PI/180), Math.sin(enemicdis.angle * Math.PI/180));
             		enemicdis.direccio.normalize(); 
-            		if(enemigosList.getChildren()[i].x < 0)
-        			{
-            			enemigosList.getChildren()[i].destroy();
-        			}
-        		}*/
-            }
-        }   
+            		enemicdis.temporizadorenemigo = 0;           		
+            	}
+        	}   
+		}
+		
 	}
+
+
 
 	VidaI(objeto1, objeto2)
 	{
@@ -485,9 +547,6 @@ class laia3 extends Phaser.Scene
    	// vidas.setText('Vidas: '+ vidas);
 	}
 
-	
-
-	
 	brims(disparo, enemigo)
 	{
 		enemigo.disableBody(true, true);
@@ -530,17 +589,7 @@ class laia3 extends Phaser.Scene
 
 		//this.klk();
 
-	}
-  	
-  /*	klk()
-  	{
-  		if (KeyB.isDown )
-	    {
-	    	serpiente.destroy();
-	    	//ataque2.call(this);
-	    }
-  	}*/
-	
+	}	
 
 	hola()
 	{
@@ -549,10 +598,9 @@ class laia3 extends Phaser.Scene
 	   	this.scene.pause('game');
 	    this.scene.launch('inventario');
 	    this.scene.start('inventario');*/
-	    Phaser.Scene.call(this, { key: 'villa2', active: true });	   
-	    
+	    Phaser.Scene.call(this, { key: 'inventario', active: true });	   
 
-        this.scene.transition({ target: 'villa2', duration: 2000 });
+        this.scene.transition({ target: 'inventario', duration: 2000 });
 
        
 	}
@@ -569,27 +617,23 @@ class laia3 extends Phaser.Scene
 	    if (player.mirar == 'right') 
 	    {
 	    	disparo.setVelocityX(1000);
-	    	setTimeout(function() {disparo.setVelocityX(-1000)}, 1000);
+	    	setTimeout(function() {disparo.setVelocityX(-1000)}, 500);
 	    }
 	    else if(player.mirar == 'up')
 	    {
 	    	disparo.setVelocityY(-1000);
-	    	setTimeout(function() {disparo.setVelocityY(1000)}, 1000);
+	    	setTimeout(function() {disparo.setVelocityY(1000)}, 500);
 	    }
 	    else if (player.mirar == 'left') 
 	    {
 	    	disparo.setVelocityX(-1000);
-	    	setTimeout(function() {disparo.setVelocityX(1000)}, 1000);
+	    	setTimeout(function() {disparo.setVelocityX(1000)}, 500);
 	    }
 	    else if (player.mirar == 'down') 
 	    {
 	    	disparo.setVelocityY(1000);
-	    	setTimeout(function() {disparo.setVelocityY(-1000)}, 1000);
+	    	setTimeout(function() {disparo.setVelocityY(-1000)}, 500);
 	    }
-
-	    
-	    
-
 	}
 
 	mascotita()
@@ -615,35 +659,7 @@ class laia3 extends Phaser.Scene
 	    	disparo.setVelocityY(1000);
 	    }
 
-	    /*if(contador <= 0) 
-    	{
-        if (tret <= true && vidas != 0) 
-        {
-            if (grupoenemigos.getChildren().length > 0)
-            {
-                var disparo = grupodisparos.create(nave.x,nave.y, 'atlas','disparo'); /* el sprite se llama disparo y hay que llamarlo */
-               /* disparo.setScale(0.5,0.5);
-                tret = false;
-                disparo.direccio =new Phaser.Math.Vector2(1,0);
-                disparo.direccio.normalize(); /* disparo 2*/
-           /* }
-        }
-        contador = 6;
-    	}  */
 	    
-
-	    
-	        //fuerza++;
-	        //marcafuerza.setText('Fuerza: '+ fuerza);
-	    
-	    /*else 
-	    {
-	            /*force.x = config.width / 2;*/
-	            /*fuerza = 0;
-	            marcafuerza.setText('Fuerza: '+ fuerza);*/
-	       /* mascota.x = mascota.x + velocidd * direccion2.x;
-	        mascota.y = mascota.y + velocidd * direccion2.y;
-	    }*/
 	}
 
 	mascotas()
@@ -664,107 +680,20 @@ class laia3 extends Phaser.Scene
 		enemigo = enemigosList.create(obj.x, obj.y,'cerd').setScale(0.1);
 	    enemigo.body.setSize(1000,1000);
 	    enemigo.seguir = false;
+	    //npc.seguir = false;
 	}
-
-	
-
-		
-
-	/*function recolectar(objeto1, objeto2)
-	{
-	    objeto2.destroy();
-	    var aleatorio = Phaser.Math.Between(1, 10);
-	    dinero=dinero+aleatorio;
-	    dineros = dineros.setText(+ dinero);
-	    comida=comida+1;
-	    scoreText1 = scoreText1.setText(+ comida);
-	}
-
-	function recolectar2(objeto1, objeto2)
-	{
-	    objeto2.destroy();
-	    var aleatorio = Phaser.Math.Between(1, 10);
-	    dinero=dinero+aleatorio;
-	    dineros = dineros.setText(+ dinero);
-	    comida=comida+1;
-	    scoreText1 = scoreText1.setText(+ comida);
-	}
-
-	function ataque1(objeto1, objeto2)
-	{
-	    if(KeyQ.isDown)
-	    {
-	        objeto2.destroy();
-	        var moneda2 = monedaList.create(cerdo1.x,cerdo1.y,'moneda').setScale(0.1);
-	    }
-	}
-	*/
-	
-	    
-	/*function movercerdo()
-	{  
-	    if(direccion1==1)
-	    {
-	        cerdo1.y=cerdo1.y-1;
-
-	        if(cerdo1.y==2000)
-	        {
-	            direccion1=0;
-	        }
-	    }
-	}
-
-	function girar()
-	{
-	    if(direccion1==0)
-	    {
-	        cerdo1.y=cerdo1.y+1;
-
-	        if(cerdo1.y==2400)
-	        { 
-	            
-	            direccion1=1;
-	        }
-	    }
-	}
-
-	function movercerdo2()
-	{  
-	    if(direccion2==1)
-	    {
-	        cerdo2.y=cerdo2.y-1;
-
-	        if(cerdo2.y==2000)
-	        {
-	            direccion2=0;
-	        }
-	    }
-	}
-
-	function girar2()
-	{
-	    if(direccion2==0)
-	    {
-	        cerdo2.y=cerdo2.y+1;
-
-	        if(cerdo2.y==2400)
-	        { 
-	            
-	            direccion2=1;
-	        }
-	    }
-	} */
 
 	//Funcion para iniciar conversación
 	hablar()
 	{
 	    if(KeyE.isDown && cd==0 && mensaje==0 && inicio==0)
 	    {
-	        texto = this.physics.add.sprite(NPC.x+50, NPC.y-100, 'texto');
+	        texto = this.physics.add.sprite(npc.x+50, npc.y-100, 'texto');
 	        texto.setScale(0.3);
 	        cd=100;
 	        mensaje=1;
 	        inicio=1;
+	        npc.seguir = true;
 	    }
 	}
 
@@ -775,7 +704,7 @@ class laia3 extends Phaser.Scene
 	    {
 	        texto.destroy();
 	        scoreText.destroy();
-	        texto2 = this.physics.add.sprite(NPC.x+50, NPC.y-100, 'texto2');
+	        texto2 = this.physics.add.sprite(npc.x+50, npc.y-100, 'texto2');
 	        texto2.setScale(0.3);
 	        cd2=200;
 	        mensaje=0;
@@ -788,7 +717,7 @@ class laia3 extends Phaser.Scene
 	{
 	    if(scorecd<=0)
 	    {
-	        scoreText = this.add.text(NPC.x-220, NPC.y + 50, 'Pulsa E para hablar y SPACE para continuar', { fontSize: '20px', fill: 'white' });
+	        scoreText = this.add.text(npc.x-220, npc.y + 50, 'Pulsa E para hablar y SPACE para continuar', { fontSize: '20px', fill: 'white' });
 	        scorecd=100;
 	        cd3=0;
 	    }
@@ -808,16 +737,29 @@ class laia3 extends Phaser.Scene
 	{
 	   seguir=true;
 	   this.movimientoenemigo();
+	   this.movimientonpc();
 	}
 
-	atacar()
-	{
-	   if(seguir==true) 
-	    {
-	        enemigo.direccion = new Phaser.Math.Vector2(player.x-enemigo.x, player.y-enemigo.y);
-	        enemigo.direccion.normalize();
-	        enemigo.x = enemigo.x + velocidad * enemigo.direccion.x;
-	        enemigo.y = enemigo.y + velocidad * enemigo.direccion.y;
-	    }
-	}
+	updateDatos()
+    {
+        if (KeyP.isDown) 
+        {
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "http:/ProyectoActual/insertarDatos.php", true);
+            xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+            //xhr.open("GET", "fichero.php", true);
+            xhr.onreadystatechange=function()
+            {
+                if (xhr.readyState==4 && xhr.status==200) 
+                {
+                    //var response=JSON.parse(this.responseText);
+                    //console.log(this.responseText);
+                }
+            }
+            xhr.send("posX="+player.x+"&posY="+player.y);
+            //xhr.send();
+            //header("location:web/index.html");
+            //window.location.href = window.location.href + "?w1=" + this.player.x + "&w2=" + this.player.y;
+        }
+    }
 }

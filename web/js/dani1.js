@@ -225,11 +225,42 @@ class dani1 extends Phaser.Scene
             obj.setAlpha(0);
             if (obj.name == "Spawn") 
             {
-                this.player.x = obj.x;
-                this.player.y = obj.y;
-                console.log(obj.x);
-                console.log(obj.y);
-            }
+                var contexto = this;
+                //this.player.x = obj.x;
+               //this.player.y = obj.y;
+                /*console.log(obj.x);
+                console.log(obj.y);*/
+
+                /*var xhr = new XMLHttpRequest();
+                xhr.open("GET", "http:/ProyectoActual/recuperarDatos.php", true);
+                xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+                //xhr.open("GET", "fichero.php", true);
+                xhr.onreadystatechange=function()
+                 {
+                if (xhr.readyState==4 && xhr.status==200) 
+                {
+                    //var response=JSON.parse(this.responseText);
+                   //console.log(this.responseText);
+                   var respuesta= this.responseText.split(" - ");
+                   //console.log(respuesta[0], respuesta[1]);
+                    contexto.player.x = respuesta[0];
+                    contexto.player.y = respuesta[1];
+                }
+             }
+
+             xhr.send();*/
+              fetch("http:/ProyectoActual/recuperarDatos.php").then(response=>{
+                    if (response.ok) {
+                        return response;
+                    }
+                }).then(async respuesta=>{
+                    var texto = await respuesta.text();
+                    var posiciones = texto.split(" - ");
+                    contexto.player.x = posiciones[0] * 1;
+                    contexto.player.y = posiciones[1] * 1;
+                });
+                
+             }
 
             if (obj.name == "Goblin") 
             {
@@ -930,18 +961,12 @@ class dani1 extends Phaser.Scene
 
     }
 
+
+
     updateDatos()
     {
         if (KeyP.isDown) 
         {
-            /*let insertarPhP = () =>
-            this.player.x
-            this.player.y
-            fetch('https://localhost/login/insertarDatos.php?variable1=valor&variable2=valor');
-            .then(response=>response.json);
-            .then(json => console.log(json[0]))
-            .catch(error => console.error(error))
-            .then(json=>console.log());*/
             var xhr = new XMLHttpRequest();
             xhr.open("POST", "http:/ProyectoActual/insertarDatos.php", true);
             xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded");
@@ -950,12 +975,12 @@ class dani1 extends Phaser.Scene
             {
                 if (xhr.readyState==4 && xhr.status==200) 
                 {
-                    var response=JSON.parse(this.responseText);
-                    console.log(response);
+                    //var response=JSON.parse(this.responseText);
+                    //console.log(this.responseText);
                 }
             }
             xhr.send("posX="+this.player.x+"&posY="+this.player.y);
-            //xhr.send("posY="+js);
+            //xhr.send();
             //header("location:web/index.html");
             //window.location.href = window.location.href + "?w1=" + this.player.x + "&w2=" + this.player.y;
         }
