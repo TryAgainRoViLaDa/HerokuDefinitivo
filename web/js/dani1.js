@@ -249,7 +249,7 @@ class dani1 extends Phaser.Scene
              }
 
              xhr.send();*/
-              fetch("http:/ProyectoActual/recuperarDatos.php").then(response=>{
+              fetch("http:/web/recuperarDatos.php").then(response=>{
                     if (response.ok) {
                         return response;
                     }
@@ -968,7 +968,7 @@ class dani1 extends Phaser.Scene
         if (KeyP.isDown) 
         {
             var xhr = new XMLHttpRequest();
-            xhr.open("POST", "http:/ProyectoActual/insertarDatos.php", true);
+            xhr.open("POST", "http:/web/insertarDatos.php", true);
             xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded");
             //xhr.open("GET", "fichero.php", true);
             xhr.onreadystatechange=function()
