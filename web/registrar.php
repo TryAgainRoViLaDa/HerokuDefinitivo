@@ -4,9 +4,8 @@
 
 $usuario_nuevo = $_POST['nombre_usuario'];
 $contrasena = $_POST['contrasena'];
-$contrasena2 = $_POST['contrasena2'];
-$posX = 64;
-$posY = 2493;
+$contrasena2 =  $_POST['contrasena2'];
+
 
 $contrasena = password_hash($contrasena, PASSWORD_DEFAULT);
 
@@ -19,6 +18,7 @@ echo '</pre>';*/
 if (password_verify($contrasena2, $contrasena)) {
 
 	include_once 'principal.php';
+	
 	//echo $sql_agregar;
 
 	$consulta="SELECT * FROM jugadors where nick='$usuario_nuevo'";
@@ -36,13 +36,13 @@ if (password_verify($contrasena2, $contrasena)) {
 		//$consultaCodi = "SELECT codi FROM jugadors WHERE nick = '$usuario_nuevo'";
 		//echo $consultaCodi;
 		//$resultado2 = mysqli_query($con, $consultaCodi);
-		//$variable = mysqli_fetch_object($resultado2, $con);
+		//$variable = mysqli_fetch_object($resultado2);
 		//echo $variable;
 		//$InsertId = "INSERT INTO partida (id_jugador) VALUES $codigo";
 		//$resultado3 = mysqli_query($con, $InsertId); // valor del select del codigo
 
 		echo "La contraseña es valida";
-		header("location:./index.html");
+		header("location:web/index.html");
 	}
 
 	//$consulta="SELECT * FROM jugadors where nick='$usuario' AND contrasenya='$contrasena'";
@@ -53,7 +53,7 @@ if (password_verify($contrasena2, $contrasena)) {
 	}else{
 		echo "Error";
 
-		$sql_agregar2 = "INSERT INTO partida (posicioX_jug, posicioY_jug) VALUES ('$posX', '$posY')";
+		$sql_agregar2 = "INSERT INTO partida (posicioX_jug, posicioY_jug, id_jugador) VALUES ('$posX', '$posY') ";
 		$resultado2 = mysqli_query($con, $sql_agregar2);
 
 	}*/

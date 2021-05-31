@@ -27,7 +27,7 @@
         {
          "draworder":"topdown",
          "id":3,
-         "name":"objetos",
+         "name":"enemigos",
          "objects":[
                 {
                  "height":0,
@@ -559,15 +559,135 @@
                 }, 
                 {
                  "height":0,
-                 "id":56,
-                 "name":"cerdo",
+                 "id":45,
+                 "name":"corazon",
                  "point":true,
                  "rotation":0,
                  "type":"",
                  "visible":true,
                  "width":0,
-                 "x":323,
-                 "y":2504
+                 "x":784,
+                 "y":2440
+                }, 
+                {
+                 "height":0,
+                 "id":46,
+                 "name":"corazon",
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":1912,
+                 "y":1968
+                }, 
+                {
+                 "height":0,
+                 "id":47,
+                 "name":"corazon",
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":2000,
+                 "y":1424
+                }, 
+                {
+                 "height":0,
+                 "id":48,
+                 "name":"corazon",
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":1616,
+                 "y":1296
+                }, 
+                {
+                 "height":0,
+                 "id":49,
+                 "name":"corazon",
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":1000,
+                 "y":1456
+                }, 
+                {
+                 "height":0,
+                 "id":50,
+                 "name":"corazon",
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":760,
+                 "y":1808
+                }, 
+                {
+                 "height":0,
+                 "id":51,
+                 "name":"corazon",
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":912,
+                 "y":632
+                }, 
+                {
+                 "height":0,
+                 "id":52,
+                 "name":"corazon",
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":112,
+                 "y":208
+                }, 
+                {
+                 "height":0,
+                 "id":53,
+                 "name":"corazon",
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":2352,
+                 "y":584
+                }, 
+                {
+                 "height":0,
+                 "id":54,
+                 "name":"corazon",
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":2248,
+                 "y":408
+                }, 
+                {
+                 "height":0,
+                 "id":55,
+                 "name":"NPC",
+                 "point":true,
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":112,
+                 "y":80
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -590,10 +710,10 @@
          "y":0
         }],
  "nextlayerid":4,
- "nextobjectid":58,
+ "nextobjectid":56,
  "orientation":"orthogonal",
  "renderorder":"right-down",
- "tiledversion":"1.5.0",
+ "tiledversion":"1.4.3",
  "tileheight":32,
  "tilesets":[
         {
@@ -900,6 +1020,6 @@
         }],
  "tilewidth":32,
  "type":"map",
- "version":1.5,
+ "version":1.4,
  "width":80
 }

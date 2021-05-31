@@ -14,7 +14,10 @@ $filas=mysqli_num_rows($resultado);
 
 
 if ($filas == 1) {
-	header("location:./index.html");
+	$cookiename="user";
+	$cookievalue=$usuario;
+	setcookie($cookiename, $cookievalue, time()+86400,"/");
+	header("location:web/index.html");
 }else{
 	?>
 	<?php
