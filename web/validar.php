@@ -17,7 +17,7 @@ if ($filas == 1) {
 	$cookiename="user";
 	$cookievalue=$usuario;
 	setcookie($cookiename, $cookievalue, time()+86400,"/");
-	header("location:web/index.html");
+	header("location:./index.html");
 }else{
 	?>
 	<?php

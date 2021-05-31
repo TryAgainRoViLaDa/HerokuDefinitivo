@@ -42,7 +42,7 @@ if (password_verify($contrasena2, $contrasena)) {
 		//$resultado3 = mysqli_query($con, $InsertId); // valor del select del codigo
 
 		echo "La contraseña es valida";
-		header("location:web/index.html");
+		header("location:./index.html");
 	}
 
 	//$consulta="SELECT * FROM jugadors where nick='$usuario' AND contrasenya='$contrasena'";
