@@ -185,7 +185,7 @@ class laia3 extends Phaser.Scene
 	    KeyB=this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.B);
 
 	    player = this.physics.add.sprite(20,2450, 'attack').setScale(0.07);
-	    fetch("http:/web/recuperarDatos2.php").then(response=>{
+	    fetch("https:/web/recuperarDatos2.php").then(response=>{
                     if (response.ok) {
                         return response;
                     }
@@ -745,7 +745,7 @@ class laia3 extends Phaser.Scene
         if (KeyP.isDown) 
         {
             var xhr = new XMLHttpRequest();
-            xhr.open("POST", "http:/web/insertarDatos.php", true);
+            xhr.open("POST", "https:/web/insertarDatos.php", true);
             xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded");
             //xhr.open("GET", "fichero.php", true);
             xhr.onreadystatechange=function()
